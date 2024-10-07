@@ -1,0 +1,58 @@
+○ Concept
+1. 각 조건에 맞는 상황을 구현
+  - 지도상, 배열 안에서 이동하면서 탐험하는 문제
+2. 별도의 알고리즘 필요 없이 구현력이 중요
+3. 매 코딩테스트마다 1문제 이상 반드시 출제
+
+○ Tip
+1. 주어진 조건을 되도록 그대로 구현 (나중에 매우 헷갈림)
+2. 되도록 쉽게 구현
+   - 최악 케이스 : 코드 복잡해 디버깅 안됨, 시간 대부분 소모
+3. Console에 Log 찍는 연습
+
+<백준 14503>
+○ Idea
+1. 특정 조건을 만족하는 한 계속 이동 : While 문
+2. 네 방향 탐색 먼저 수행 > 빈칸이 있을 경우 이동
+3. 네 방향 탐색 안될 경우, 뒤로 한칸 가서 반복
+
+○ O(n)
+- While 문 : n * m (50 * 50)
+- 각 칸에서 네 방향 연산 수행
+
+<Code>
+import sys
+input = sys.stdin.readline
+
+n, m = map(int, input().split())
+y, x, d = map(int, input().split())
+room = [list(map(int, input().split())) for _ in range(n)]
+
+dy, dx = [-1, 0, 1, 0], [0, 1, 0, -1]
+visited = [[False] * m for _ in range(n)]
+visited[y][x] = True
+cnt = 1
+
+while True:
+    flag = False
+    for _ in range(4):
+        d = (d + 3) % 4
+        ny, nx = y + dy[d], x + dx[d]
+
+        if 0 <= ny < n and 0 <= nx < m and not visited[ny][nx]:
+            visited[ny][nx] = True
+            cnt += 1
+            y, x = ny, nx
+            flag = True
+            break
+
+    if not flag:
+        # 네 방향 모두 청소가 불가능한 경우
+        # 후진했을때 벽이면 break
+        # 벽이 아니라면 그 위치 return
+        if room[y - dy[d]][x - dx[d]] == 1:
+            break
+        else:
+            y, x = y - dy[d], x - dx[d]
+
+print(cnt)
