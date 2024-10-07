@@ -1,0 +1,58 @@
+○ Concept
+-  그래프 탐색
+- Graph : Vertex + Edge
+
+○ Idea
+1. 시작점에 연결된 Vertex 찾기
+2. 찾은 Vertex를 Queue에 저장
+3. Queue의 가장 먼저 것을 뽑아서 반복
+
+○ O(n)
+- O(V + E)
+
+○ 자료구조
+- 검색할 그래프
+- 방문여부 확인
+- Queue  실행
+
+<백준 1926번>
+- 2중 for문 => 값 1 & 방문 X
+- 시간복잡도 : 5 * 500 * 500 < 2억 // 가능
+
+<code>
+from collections import deque
+import sys
+input = sys.stdin.readline
+
+def bfs(x, y):
+    visited[y][x] = True
+    dx, dy = [1, 0, -1, 0], [0, 1, 0, -1]
+    result = 1
+    q = deque()
+    q.append([x, y])
+    
+    while q:
+        x, y = q.popleft()
+        for k in range(4):
+            nx, ny = x + dx[k], y + dy[k]
+            if 0 <= nx < m and 0 <= ny < n:
+                if map[ny][nx] == 1 and visited[ny][nx] == False:
+                    visited[ny][nx] = True
+                    q.append([nx, ny])
+                    result += 1
+    
+    return result
+
+n, m = map(int, input().split())
+map = [list(map(int, input().split())) for _ in range(n)]
+visited = [[False] * m for _ in range(n)]
+cnt, max_Val = 0, 0
+
+for i in range(n):
+    for j in range(m):
+        if map[i][j] == 1 and visited[i][j] == False:
+            cnt += 1
+            max_Val = max(max_Val, bfs(j, i))
+            
+print(cnt)
+print(max_Val)
